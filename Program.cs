@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using LabManager.Database;
+using LabManager.Repositories;
 using Microsoft.Data.Sqlite;
 
 Console.WriteLine(args);
@@ -11,31 +12,23 @@ foreach (var arg in args)
     var databaseConfig = new DatabaseConfig();
     new DatabaseSetup(databaseConfig);
 
+    var computerRepository = new ComputerRepository(databaseConfig);
+
     //Routing -- Roteamento
 
 
     var modelName = args[0];
     var modelAction = args[1];
 
-    if(modelName == "Computer"){
-        if(modelAction == "List"){
-            var conection = new SqliteConnection("Data Source=database.db");
-            conection.Open();
-            
-            var command = conection.CreateCommand();
-            command.CommandText = "SELECT * FROM Computers;";
-
-            var reader = command.ExecuteReader();
-
-            while(reader.Read())
-            {   
-                Console.WriteLine("{0}, {1}, {2}", reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
-                
-            }
-            reader.Close();
-            conection.Close();
-
-            Console.WriteLine("List Computer");
+    if(modelName == "Computer")
+    {
+        if(modelAction == "List")
+        {
+           Console.WriteLine("Computer List");
+           foreach(var computer in computerRepository.GetAll())
+           {
+               Console.WriteLine("{0},{1},{2}", computer.Id, computer.Ram, computer.Processor);
+           }
         }
         if(modelAction == "New"){
             var conection = new SqliteConnection("Data Source=database.db");
