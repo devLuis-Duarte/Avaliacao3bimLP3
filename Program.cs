@@ -1,4 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using LabManager.Database;
 using Microsoft.Data.Sqlite;
 
 Console.WriteLine(args);
@@ -7,20 +8,9 @@ foreach (var arg in args)
 {
     Console.WriteLine(arg);
 }
-    var conection = new SqliteConnection("Data Source=database.db");
-    conection.Open();
+    var databaseConfig = new DatabaseConfig();
+    new DatabaseSetup(databaseConfig);
 
-    var command = conection.CreateCommand();
-    command.CommandText = @";
-    CREATE TABLE IF NOT EXISTS Computers(
-        id int not null primary key,
-        ram varchar(100) not null,
-        processor varchar(100) not null
-    );
-";
-    command.ExecuteNonQuery();
-
-    conection.Close();
     //Routing -- Roteamento
 
 
@@ -29,9 +19,10 @@ foreach (var arg in args)
 
     if(modelName == "Computer"){
         if(modelAction == "List"){
-            conection = new SqliteConnection("Data Source=database.db");
+            var conection = new SqliteConnection("Data Source=database.db");
             conection.Open();
-            command = conection.CreateCommand();
+            
+            var command = conection.CreateCommand();
             command.CommandText = "SELECT * FROM Computers;";
 
             var reader = command.ExecuteReader();
@@ -47,7 +38,7 @@ foreach (var arg in args)
             Console.WriteLine("List Computer");
         }
         if(modelAction == "New"){
-            conection = new SqliteConnection("Data Source=database.db");
+            var conection = new SqliteConnection("Data Source=database.db");
             conection.Open();
 
             Console.WriteLine("New computer");
@@ -55,7 +46,7 @@ foreach (var arg in args)
             string ram = args[3];
             string processor = args[4];
 
-            command = conection.CreateCommand();
+            var command = conection.CreateCommand();
             command.CommandText = "INSERT INTO Computers VALUES($id, $ram, $processor)";
             command.Parameters.AddWithValue("$id", id);
             command.Parameters.AddWithValue("$ram", ram);
