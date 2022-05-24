@@ -35,5 +35,22 @@ class ComputerRepository
 
             return computers;
     }
+    public void Save(Computer computer)
+    {
+        var conection = new SqliteConnection("databaseConfig.ConnectionString");
+            conection.Open();
+
+            Console.WriteLine("New computer");
+  
+
+            var command = conection.CreateCommand();
+            command.CommandText = "INSERT INTO Computers VALUES($id, $ram, $processor)";
+            command.Parameters.AddWithValue("$id", computer.Id);
+            command.Parameters.AddWithValue("$ram", computer.Ram);
+            command.Parameters.AddWithValue("$processor",computer.Processor);
+            command.ExecuteNonQuery();
+
+            conection.Close();
+    }
   
 }
