@@ -14,7 +14,7 @@ class ComputerRepository
     {
         this.databaseConfig = databaseConfig;
     }
-    /*public List<Computer>GetAll()
+      /*public List<Computer>GetAll()
     {
         var conection = new SqliteConnection("Data Source=database.db");
             conection.Open();
@@ -73,6 +73,53 @@ class ComputerRepository
         connection.Close();
         return computer;
 }
+public void Delete(int id)
+    {
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
+        connection.Open();
 
+        connection.Execute("DELETE FROM Computers WHERE id = @Id;", new{Id = id});
+    
+        connection.Close();
+    }
+
+    public Computer Update(Computer computer)
+    {
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
+        connection.Open();
+
+        connection.Execute(@"
+            UPDATE Computers 
+            SET 
+                ram = @Ram,
+                processor = @Processor
+            WHERE id = @Id;
+            ", computer);
+
+        connection.Close();
+
+        return computer;
+    }
+
+    public Computer GetById(int id)
+    {
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
+        connection.Open();
+
+        var computer = connection.QuerySingle<Computer>("SELECT * FROM Computers WHERE id = @Id;", new{Id = id});
+        
+        connection.Close();
+        return computer;
+    }
+
+    public bool ExistsById(int id)
+    {
+        var connection = new SqliteConnection(databaseConfig.ConnectionString);
+        connection.Open();
+
+        var result = Convert.ToBoolean(connection.ExecuteScalar("SELECT count(id) FROM Computers WHERE id = @Id;", new {Id = id}));
+
+        return result;
+    }
   
 }
