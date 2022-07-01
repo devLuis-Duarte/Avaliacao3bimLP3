@@ -9,10 +9,10 @@ class DatabaseSetup
     public DatabaseSetup (DatabaseConfig databaseConfig)
     {
         this.databaseConfig = databaseConfig;
-        CreateComputerTable();
+        CreateProductTable();
     }
 
-    public void CreateComputerTable()
+    public void CreateProductTable()
     {
         
         var conection = new SqliteConnection("Data Source=database.db");
@@ -20,10 +20,11 @@ class DatabaseSetup
 
         var command = conection.CreateCommand();
         command.CommandText = @";
-        CREATE TABLE IF NOT EXISTS Computers(
+        CREATE TABLE IF NOT EXISTS Products(
             id int not null primary key,
-            ram varchar(100) not null,
-            processor varchar(100) not null
+            name varchar(100) not null,
+            price double(3) not null,
+            active bool not null
         );
         ";
         command.ExecuteNonQuery();
